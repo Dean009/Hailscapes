@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router-dom'
 import SiteNavbar from './components/SiteNavbar'
 import AlbumPage from './pages/AlbumPage'
 import HomePage from './pages/HomePage'
@@ -6,7 +6,7 @@ import ServicesPage from './pages/ServicesPage'
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div>
         <SiteNavbar />
 
@@ -22,7 +22,7 @@ function App() {
           </div>
         </footer>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
