@@ -23,16 +23,16 @@ function HomePage() {
 
   return (
     <div>
-      <header className="bg-success text-white py-5 shadow-sm">
+      <header className="text-white py-5 shadow-sm" style={{ backgroundColor: '#4A7C59' }}>
         <div className="container">
           <div className="text-center">
             <img
               src="/logo.png"
-              alt="Hail Landscapes Logo"
+              alt="Hail Landscaping Logo"
               className="mb-3"
               style={{ maxWidth: '350px', width: '100%' }}
             />
-            <h1 className="display-3 fw-bold">Hail Landscapes</h1>
+            <h1 className="display-3 fw-bold">Hail Landscaping</h1>
             <p className="lead mb-0">Professional Landscaping Services</p>
             <p className="mb-0">Transform Your Outdoor Space</p>
           </div>
@@ -41,7 +41,7 @@ function HomePage() {
 
       <main className="container my-5">
         <section className="text-center mb-5">
-          <h2 className="mb-4">Welcome to Hail Landscapes</h2>
+          <h2 className="mb-4">Welcome to Hail Landscaping</h2>
           <p className="lead text-muted">
             We specialize in creating beautiful outdoor spaces that enhance your property's value and appeal.
           </p>
@@ -189,7 +189,7 @@ function HomePage() {
                       ></textarea>
                     </div>
                     <div className="d-grid">
-                      <button type="submit" className="btn btn-success btn-lg">
+                      <button type="submit" className="btn btn-lg" style={{ backgroundColor: '#4A7C59', borderColor: '#4A7C59' }}>
                         Send Message
                       </button>
                     </div>

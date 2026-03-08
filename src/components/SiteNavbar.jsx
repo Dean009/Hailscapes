@@ -2,10 +2,10 @@ import { Link, NavLink } from 'react-router-dom'
 
 function SiteNavbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-dark shadow-sm" style={{ backgroundColor: '#6B5D54' }}>
       <div className="container">
         <Link className="navbar-brand fw-bold" to="/">
-          Hail Landscapes
+          Hail Landscaping
         </Link>
         <button
           className="navbar-toggler"

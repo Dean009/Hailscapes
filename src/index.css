@@ -1,0 +1,45 @@
+/* Brand Colors */
+:root {
+  --color-brown: #A0826D;
+  --color-brown-dark: #6B5D54;
+  --color-green: #4A7C59;
+  --color-green-dark: #2D4F35;
+}
+
+/* Navbar */
+.navbar-brand-custom {
+  background-color: var(--color-brown-dark);
+  color: white !important;
+}
+
+/* Header */
+.header-custom {
+  background-color: var(--color-green) !important;
+  color: white;
+}
+
+/* Buttons */
+.btn-custom {
+  background-color: var(--color-green);
+  border-color: var(--color-green);
+  color: white;
+}
+
+.btn-custom:hover {
+  background-color: var(--color-green-dark);
+  border-color: var(--color-green-dark);
+  color: white;
+}
+
+/* Accents */
+.accent-brown {
+  color: var(--color-brown);
+}
+
+.bg-accent-brown {
+  background-color: var(--color-brown);
+}
+
+.bg-accent-green {
+  background-color: var(--color-green);
+}
