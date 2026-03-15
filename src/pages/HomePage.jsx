@@ -1,205 +1,210 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function HomePage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  })
+  const [selectedImage, setSelectedImage] = useState(null)
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    alert('Thank you for contacting us! We will get back to you soon.')
-    setFormData({ name: '', email: '', phone: '', message: '' })
-  }
+  const portfolioImages = [
+    'IMG-20260227-WA0001.jpg',
+    'IMG-20260227-WA0002.jpg',
+    'IMG-20260227-WA0003.jpg',
+    'IMG-20260227-WA0004.jpg',
+    'IMG-20260227-WA0005.jpg',
+    'IMG-20260227-WA0006.jpg',
+    'IMG-20260227-WA0007.jpg',
+    'IMG-20260227-WA0008.jpg',
+    'IMG-20260227-WA0009.jpg',
+    'IMG-20260227-WA0010.jpg',
+    'IMG-20260227-WA0011.jpg',
+    'IMG-20260227-WA0012.jpg',
+    'IMG-20260227-WA0013.jpg',
+    'IMG-20260227-WA0014.jpg',
+    'IMG-20260227-WA0015.jpg',
+    'IMG-20260227-WA0016.jpg',
+    'IMG-20260227-WA0017.jpg',
+    'IMG-20260227-WA0018.jpg',
+    'IMG-20260227-WA0019.jpg',
+    'IMG-20260227-WA0020.jpg',
+    'IMG-20260227-WA0021.jpg',
+    'IMG-20260227-WA0022.jpg',
+    'IMG-20260227-WA0023.jpg',
+    'IMG-20260227-WA0025.jpg',
+    'IMG-20260227-WA0026.jpg',
+    'IMG-20260227-WA0027.jpg',
+    'IMG-20260227-WA0028.jpg',
+    'IMG-20260227-WA0029.jpg',
+    'IMG-20260227-WA0030.jpg'
+  ]
 
-  const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value
-    })
-  }
+  useEffect(() => {
+    const onEscape = (event) => {
+      if (event.key === 'Escape') {
+        setSelectedImage(null)
+      }
+    }
+
+    window.addEventListener('keydown', onEscape)
+    return () => window.removeEventListener('keydown', onEscape)
+  }, [])
 
   return (
-    <div>
-      <header className="text-white py-5 shadow-sm" style={{ backgroundColor: '#4A7C59' }}>
-        <div className="container">
-          <div className="text-center">
-            <img
-              src="/logo.png"
-              alt="Hail Landscaping Logo"
-              className="mb-3"
-              style={{ maxWidth: '350px', width: '100%' }}
-            />
-            <h1 className="display-3 fw-bold">Hail Landscaping</h1>
-            <p className="lead mb-0">Professional Landscaping Services</p>
-            <p className="mb-0">Transform Your Outdoor Space</p>
-          </div>
+    <div className="agency-site">
+      <header className="top-header">
+        <div className="header-meta">Premium landscaping and groundwork services for homes and estates.</div>
+        <div className="header-logo-wrap">
+          <img className="header-logo-image" src="/logo.png" alt="Hail Landscaping logo" />
+          <div className="header-logo">Hail Landscaping</div>
         </div>
+        <div className="header-cities">Cumbria · Lake District · North West</div>
       </header>
 
-      <main className="container my-5">
-        <section className="text-center mb-5">
-          <h2 className="mb-4">Welcome to Hail Landscaping</h2>
-          <p className="lead text-muted">
-            We specialize in creating beautiful outdoor spaces that enhance your property's value and appeal.
-          </p>
-        </section>
+      <div className="primary-nav-wrap">
+        <nav className="primary-nav" aria-label="Primary navigation">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#blog">Blog</a>
+          <a href="#shop">Shop</a>
+          <a href="#education">Education</a>
+          <a href="#events">Events</a>
+          <a href="#contact">Contact</a>
+        </nav>
 
-        <section className="mb-5">
-          <h2 className="text-center mb-4">Our Work</h2>
-          <div id="carouselBeforeAfter" className="carousel slide shadow" data-bs-ride="carousel">
-            <div className="carousel-indicators">
-              <button type="button" data-bs-target="#carouselBeforeAfter" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
-              <button type="button" data-bs-target="#carouselBeforeAfter" data-bs-slide-to="1" aria-label="Slide 2"></button>
-              <button type="button" data-bs-target="#carouselBeforeAfter" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-            <div className="carousel-inner">
-              <div className="carousel-item active">
-                <div className="row g-0">
-                  <div className="col-md-6">
-                    <div className="bg-secondary text-white d-flex align-items-center justify-content-center" style={{ height: '400px' }}>
-                      <div className="text-center">
-                        <h3>BEFORE</h3>
-                        <p>Project 1 - Before</p>
-                        <small className="text-muted">Add your before image here</small>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="bg-success text-white d-flex align-items-center justify-content-center" style={{ height: '400px' }}>
-                      <div className="text-center">
-                        <h3>AFTER</h3>
-                        <p>Project 1 - After</p>
-                        <small className="text-muted">Add your after image here</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="carousel-item">
-                <div className="row g-0">
-                  <div className="col-md-6">
-                    <div className="bg-secondary text-white d-flex align-items-center justify-content-center" style={{ height: '400px' }}>
-                      <div className="text-center">
-                        <h3>BEFORE</h3>
-                        <p>Project 2 - Before</p>
-                        <small className="text-muted">Add your before image here</small>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="bg-success text-white d-flex align-items-center justify-content-center" style={{ height: '400px' }}>
-                      <div className="text-center">
-                        <h3>AFTER</h3>
-                        <p>Project 2 - After</p>
-                        <small className="text-muted">Add your after image here</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="carousel-item">
-                <div className="row g-0">
-                  <div className="col-md-6">
-                    <div className="bg-secondary text-white d-flex align-items-center justify-content-center" style={{ height: '400px' }}>
-                      <div className="text-center">
-                        <h3>BEFORE</h3>
-                        <p>Project 3 - Before</p>
-                        <small className="text-muted">Add your before image here</small>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="bg-success text-white d-flex align-items-center justify-content-center" style={{ height: '400px' }}>
-                      <div className="text-center">
-                        <h3>AFTER</h3>
-                        <p>Project 3 - After</p>
-                        <small className="text-muted">Add your after image here</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        <div className="social-links" aria-label="Social media links">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="LinkedIn">IN</a>
+          <a href="#" aria-label="Behance">BE</a>
+        </div>
+      </div>
+
+      <main>
+        <section className="hero" id="home">
+          <div className="hero-content">
+            <p className="eyebrow">Scott Hail Landscaping</p>
+            <h1>
+              Landscaping &amp;
+              <br />
+              Groundworks
+              <br />
+              for Homes,
+              <br />
+              Estates &amp;
+              <br />
+              Businesses.
+            </h1>
+            <p className="hero-copy" id="about">
+              Based in Cumbria and led by Scott Hail, we create clean, durable, and beautifully finished outdoor
+              spaces. From first design ideas to final planting, every detail is delivered with care.
+            </p>
+          </div>
+
+          <div className="hero-visual" aria-hidden="true">
+            <div className="hero-logo-card">
+              <div className="hero-logo-badge">
+                <img className="hero-logo-image" src="/logo.png" alt="Hail Landscaping logo" />
               </div>
             </div>
-            <button className="carousel-control-prev" type="button" data-bs-target="#carouselBeforeAfter" data-bs-slide="prev">
-              <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span className="visually-hidden">Previous</span>
-            </button>
-            <button className="carousel-control-next" type="button" data-bs-target="#carouselBeforeAfter" data-bs-slide="next">
-              <span className="carousel-control-next-icon" aria-hidden="true"></span>
-              <span className="visually-hidden">Next</span>
-            </button>
           </div>
         </section>
 
-        <section id="contact" className="mb-5">
-          <h2 className="text-center mb-4">Contact Us</h2>
-          <div className="row justify-content-center">
-            <div className="col-md-8 col-lg-6">
-              <div className="card shadow">
-                <div className="card-body p-4">
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                      <label htmlFor="name" className="form-label">Name</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="email" className="form-label">Email</label>
-                      <input
-                        type="email"
-                        className="form-control"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="phone" className="form-label">Phone</label>
-                      <input
-                        type="tel"
-                        className="form-control"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="message" className="form-label">Message</label>
-                      <textarea
-                        className="form-control"
-                        id="message"
-                        name="message"
-                        rows="4"
-                        value={formData.message}
-                        onChange={handleChange}
-                        required
-                      ></textarea>
-                    </div>
-                    <div className="d-grid">
-                      <button type="submit" className="btn btn-lg" style={{ backgroundColor: '#4A7C59', borderColor: '#4A7C59' }}>
-                        Send Message
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
+        <section className="content-section" id="services">
+          <div className="section-topline">
+            <span>Services</span>
+            <span>01</span>
+          </div>
+          <h2>Strategic services built for premium digital growth.</h2>
+          <div className="service-grid">
+            <article>
+              <h3>Landscape Design & Build</h3>
+              <p>Complete garden transformations including layout planning, planting schemes, and hard landscaping.</p>
+            </article>
+            <article>
+              <h3>Driveways, Patios & Stonework</h3>
+              <p>Precision paving and stone installation built for everyday use and long-term performance.</p>
+            </article>
+            <article>
+              <h3>Groundworks & Site Prep</h3>
+              <p>Professional excavation, drainage, and foundation preparation to keep projects moving smoothly.</p>
+            </article>
+          </div>
+        </section>
+
+        <section className="content-section" id="portfolio">
+          <div className="section-topline">
+            <span>Portfolio</span>
+            <span>02</span>
+          </div>
+          <h2>Selected landscaping projects completed across Cumbria.</h2>
+          <div className="portfolio-gallery">
+            {portfolioImages.map((imageName, index) => (
+              <figure className="portfolio-item" key={imageName}>
+                <button
+                  type="button"
+                  className="portfolio-button"
+                  onClick={() => setSelectedImage({ imageName, index })}
+                  aria-label={`Open full size image ${index + 1}`}
+                >
+                  <img
+                    src={`/groundworks/${imageName}`}
+                    alt={`Groundworks project ${index + 1}`}
+                    loading="lazy"
+                  />
+                </button>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        <section className="content-section testimonials" id="events">
+          <div className="section-topline">
+            <span>Testimonials</span>
+            <span>03</span>
+          </div>
+          <h2>Trusted by homeowners and businesses throughout Cumbria.</h2>
+          <blockquote>
+            “Scott and the team were brilliant from start to finish. The workmanship was excellent,
+            communication was clear, and our garden now looks fantastic all year round.”
+            <cite>Homeowner, Carlisle</cite>
+          </blockquote>
+        </section>
+
+        <section className="contact-cta" id="contact">
+          <p className="eyebrow">Start Your Project</p>
+          <h2>Book a site visit with Scott Hail and get a clear plan for your outdoor space.</h2>
+          <a className="cta-button" href="mailto:scott@haillandscaping.co.uk">scott@haillandscaping.co.uk</a>
+          <div className="ghost-links" id="blog">
+            <a href="#">View Recent Projects</a>
+            <a href="#" id="shop">Request a Quote</a>
+            <a href="#" id="education">Service Areas</a>
           </div>
         </section>
       </main>
+
+      {selectedImage ? (
+        <div
+          className="lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Full size project image"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button
+            type="button"
+            className="lightbox-close"
+            onClick={() => setSelectedImage(null)}
+            aria-label="Close full size image"
+          >
+            Close
+          </button>
+
+          <div className="lightbox-frame" onClick={(event) => event.stopPropagation()}>
+            <img
+              src={`/groundworks/${selectedImage.imageName}`}
+              alt={`Groundworks project ${selectedImage.index + 1} full size`}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
