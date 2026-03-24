@@ -1,44 +1,148 @@
 import { useEffect, useState } from 'react'
 
+const DEFAULT_PORTFOLIO_IMAGES = [
+  '1.jpg',
+  '1.1.jpg',
+  'IMG-20260227-WA0002.jpg',
+  'IMG-20260227-WA0003.jpg',
+  'IMG-20260227-WA0004.jpg',
+  'IMG-20260227-WA0005.jpg',
+  'IMG-20260227-WA0006.jpg',
+  'IMG-20260227-WA0007.jpg',
+  'IMG-20260227-WA0008.jpg',
+  'IMG-20260227-WA0009.jpg',
+  'IMG-20260227-WA0010.jpg',
+  'IMG-20260227-WA0011.jpg',
+  'IMG-20260227-WA0012.jpg',
+  'IMG-20260227-WA0013.jpg',
+  'IMG-20260227-WA0014.jpg',
+  'IMG-20260227-WA0015.jpg',
+  'IMG-20260227-WA0016.jpg',
+  'IMG-20260227-WA0017.jpg',
+  'IMG-20260227-WA0018.jpg',
+  'IMG-20260227-WA0020.jpg',
+  'IMG-20260227-WA0021.jpg',
+  'IMG-20260227-WA0022.jpg',
+  'IMG-20260227-WA0023.jpg',
+  'IMG-20260227-WA0025.jpg',
+  'IMG-20260227-WA0026.jpg',
+  'IMG-20260227-WA0027.jpg',
+  'IMG-20260227-WA0028.jpg',
+  'IMG-20260227-WA0029.jpg',
+  'IMG-20260227-WA0030.jpg'
+]
+
+const ADMIN_IMAGES_STORAGE_KEY = 'hailscapes-admin-images-v1'
+const ADMIN_BEFORE_IMAGES_STORAGE_KEY = 'hailscapes-admin-before-images-v1'
+const ADMIN_AFTER_IMAGES_STORAGE_KEY = 'hailscapes-admin-after-images-v1'
+const ADMIN_AUTH_STORAGE_KEY = 'hailscapes-admin-auth-v1'
+const FALLBACK_ADMIN_PASSCODE = 'hailscapes-admin'
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024
+
 function HomePage() {
   const [selectedImage, setSelectedImage] = useState(null)
+  const [adminImages, setAdminImages] = useState([])
+  const [beforeImages, setBeforeImages] = useState([])
+  const [afterImages, setAfterImages] = useState([])
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false)
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false)
+  const [adminPasscode, setAdminPasscode] = useState('')
+  const [adminAuthError, setAdminAuthError] = useState('')
+  const [adminUploadError, setAdminUploadError] = useState('')
+  const [isAdminStorageAvailable, setIsAdminStorageAvailable] = useState(true)
+  const [isNavSolid, setIsNavSolid] = useState(false)
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
+
+  const expectedPasscode = import.meta.env.VITE_ADMIN_PASSWORD || FALLBACK_ADMIN_PASSCODE
 
   const portfolioImages = [
-    'IMG-20260227-WA0001.jpg',
-    'IMG-20260227-WA0002.jpg',
-    'IMG-20260227-WA0003.jpg',
-    'IMG-20260227-WA0004.jpg',
-    'IMG-20260227-WA0005.jpg',
-    'IMG-20260227-WA0006.jpg',
-    'IMG-20260227-WA0007.jpg',
-    'IMG-20260227-WA0008.jpg',
-    'IMG-20260227-WA0009.jpg',
-    'IMG-20260227-WA0010.jpg',
-    'IMG-20260227-WA0011.jpg',
-    'IMG-20260227-WA0012.jpg',
-    'IMG-20260227-WA0013.jpg',
-    'IMG-20260227-WA0014.jpg',
-    'IMG-20260227-WA0015.jpg',
-    'IMG-20260227-WA0016.jpg',
-    'IMG-20260227-WA0017.jpg',
-    'IMG-20260227-WA0018.jpg',
-    'IMG-20260227-WA0019.jpg',
-    'IMG-20260227-WA0020.jpg',
-    'IMG-20260227-WA0021.jpg',
-    'IMG-20260227-WA0022.jpg',
-    'IMG-20260227-WA0023.jpg',
-    'IMG-20260227-WA0025.jpg',
-    'IMG-20260227-WA0026.jpg',
-    'IMG-20260227-WA0027.jpg',
-    'IMG-20260227-WA0028.jpg',
-    'IMG-20260227-WA0029.jpg',
-    'IMG-20260227-WA0030.jpg'
+    ...DEFAULT_PORTFOLIO_IMAGES.map((imageName) => ({
+      id: imageName,
+      src: `/groundworks/${imageName}`,
+      alt: 'Groundworks project image',
+      type: 'default'
+    })),
+    ...adminImages
   ]
+
+  const activePortfolioImage = portfolioImages[currentSlideIndex] || portfolioImages[0]
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(ADMIN_IMAGES_STORAGE_KEY)
+      if (!stored) {
+        return
+      }
+
+      const parsed = JSON.parse(stored)
+      if (Array.isArray(parsed)) {
+        setAdminImages(parsed)
+      }
+    } catch {
+      setAdminImages([])
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(ADMIN_BEFORE_IMAGES_STORAGE_KEY)
+      if (!stored) {
+        return
+      }
+
+      const parsed = JSON.parse(stored)
+      if (Array.isArray(parsed)) {
+        setBeforeImages(parsed)
+      }
+    } catch {
+      setBeforeImages([])
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(ADMIN_AFTER_IMAGES_STORAGE_KEY)
+      if (!stored) {
+        return
+      }
+
+      const parsed = JSON.parse(stored)
+      if (Array.isArray(parsed)) {
+        setAfterImages(parsed)
+      }
+    } catch {
+      setAfterImages([])
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isAdminStorageAvailable) {
+      return
+    }
+
+    try {
+      localStorage.setItem(ADMIN_IMAGES_STORAGE_KEY, JSON.stringify(adminImages))
+      localStorage.setItem(ADMIN_BEFORE_IMAGES_STORAGE_KEY, JSON.stringify(beforeImages))
+      localStorage.setItem(ADMIN_AFTER_IMAGES_STORAGE_KEY, JSON.stringify(afterImages))
+    } catch {
+      setIsAdminStorageAvailable(false)
+      setAdminUploadError('Image saved for now, but browser storage is full. Remove some uploads or use smaller files.')
+    }
+  }, [adminImages, beforeImages, afterImages, isAdminStorageAvailable])
+
+  useEffect(() => {
+    setIsAdminAuthenticated(localStorage.getItem(ADMIN_AUTH_STORAGE_KEY) === 'true')
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem(ADMIN_AUTH_STORAGE_KEY, isAdminAuthenticated ? 'true' : 'false')
+  }, [isAdminAuthenticated])
 
   useEffect(() => {
     const onEscape = (event) => {
       if (event.key === 'Escape') {
         setSelectedImage(null)
+        setIsAdminLoginOpen(false)
       }
     }
 
@@ -46,64 +150,164 @@ function HomePage() {
     return () => window.removeEventListener('keydown', onEscape)
   }, [])
 
+  useEffect(() => {
+    const onScroll = () => {
+      setIsNavSolid(window.scrollY > 36)
+    }
+
+    onScroll()
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    if (portfolioImages.length === 0) {
+      setCurrentSlideIndex(0)
+      return
+    }
+
+    if (currentSlideIndex > portfolioImages.length - 1) {
+      setCurrentSlideIndex(portfolioImages.length - 1)
+    }
+  }, [portfolioImages, currentSlideIndex])
+
+  const toDataUrl = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = () => reject(new Error(`Failed to read ${file.name}`))
+      reader.readAsDataURL(file)
+    })
+
+  const handleImageUpload = async (event, imageType, setImageList, label) => {
+    const files = Array.from(event.target.files || [])
+    if (files.length === 0) {
+      return
+    }
+
+    const oversizeFile = files.find((file) => file.size > MAX_UPLOAD_BYTES)
+    if (oversizeFile) {
+      setAdminUploadError(`${label}: "${oversizeFile.name}" is too large. Please upload images up to 4MB each.`)
+      event.target.value = ''
+      return
+    }
+
+    setAdminUploadError('')
+
+    try {
+      const uploaded = await Promise.all(
+        files.map(async (file) => {
+          const src = await toDataUrl(file)
+          return {
+            id: typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `${Date.now()}-${file.name}`,
+            src,
+            alt: file.name,
+            type: imageType
+          }
+        })
+      )
+
+      setImageList((current) => [...current, ...uploaded])
+    } catch (error) {
+      console.error(error)
+      setAdminUploadError(`${label}: upload failed. Please try a different image file.`)
+    } finally {
+      event.target.value = ''
+    }
+  }
+
+  const removeAdminImage = (imageId, setImageList) => {
+    setImageList((current) => current.filter((image) => image.id !== imageId))
+
+    if (selectedImage?.id === imageId) {
+      setSelectedImage(null)
+    }
+  }
+
+  const handleAdminLoginSubmit = (event) => {
+    event.preventDefault()
+
+    if (adminPasscode.trim() !== expectedPasscode) {
+      setAdminAuthError('Incorrect passcode. Please try again.')
+      return
+    }
+
+    setIsAdminAuthenticated(true)
+    setIsAdminLoginOpen(false)
+    setAdminPasscode('')
+    setAdminAuthError('')
+  }
+
+  const handleAdminLogout = () => {
+    setIsAdminAuthenticated(false)
+    setAdminPasscode('')
+    setAdminAuthError('')
+  }
+
+  const showPreviousSlide = () => {
+    setCurrentSlideIndex((current) => (current === 0 ? portfolioImages.length - 1 : current - 1))
+  }
+
+  const showNextSlide = () => {
+    setCurrentSlideIndex((current) => (current === portfolioImages.length - 1 ? 0 : current + 1))
+  }
+
   return (
     <div className="agency-site">
-      <header className="top-header">
-        <div className="header-meta">Premium landscaping and groundwork services for homes and estates.</div>
-        <div className="header-logo-wrap">
-          <img className="header-logo-image" src="/logo.png" alt="Hail Landscaping logo" />
-          <div className="header-logo">Hail Landscaping</div>
-        </div>
-        <div className="header-cities">Cumbria · Lake District · North West</div>
-      </header>
-
-      <div className="primary-nav-wrap">
-        <nav className="primary-nav" aria-label="Primary navigation">
-          <a href="#home">Home</a>
-          <a href="#about">About</a>
-          <a href="#services">Services</a>
-          <a href="#portfolio">Portfolio</a>
-          <a href="#blog">Blog</a>
-          <a href="#shop">Shop</a>
-          <a href="#education">Education</a>
-          <a href="#events">Events</a>
-          <a href="#contact">Contact</a>
-        </nav>
-
-        <div className="social-links" aria-label="Social media links">
-          <a href="#" aria-label="Instagram">IG</a>
-          <a href="#" aria-label="LinkedIn">IN</a>
-          <a href="#" aria-label="Behance">BE</a>
-        </div>
-      </div>
-
       <main>
-        <section className="hero" id="home">
-          <div className="hero-content">
-            <p className="eyebrow">Scott Hail Landscaping</p>
-            <h1>
-              Landscaping &amp;
-              <br />
-              Groundworks
-              <br />
-              for Homes,
-              <br />
-              Estates &amp;
-              <br />
-              Businesses.
-            </h1>
-            <p className="hero-copy" id="about">
-              Based in Cumbria and led by Scott Hail, we create clean, durable, and beautifully finished outdoor
-              spaces. From first design ideas to final planting, every detail is delivered with care.
-            </p>
-          </div>
+        <section
+          className="premium-hero"
+          id="home"
+          style={{ backgroundImage: 'url(/groundworks/IMG-20260227-WA0011.jpg)' }}
+        >
+          <nav className={`floating-nav ${isNavSolid ? 'is-solid' : ''}`} aria-label="Primary navigation">
+            <a className="brand-lockup" href="#home" aria-label="Go to homepage">
+              <img className="brand-logo-image" src="/logo.png" alt="Hail Landscaping logo" />
+              <span>Hail Landscaping</span>
+            </a>
+            <div className="floating-nav-links">
+              <a href="#about">About</a>
+              <a href="#services">Services</a>
+              <a href="#portfolio">Projects</a>
+              <a href="#contact">Contact</a>
+            </div>
+          </nav>
 
-          <div className="hero-visual" aria-hidden="true">
-            <div className="hero-logo-card">
-              <div className="hero-logo-badge">
-                <img className="hero-logo-image" src="/logo.png" alt="Hail Landscaping logo" />
+          <div className="hero-inner">
+            <div className="hero-content">
+              <div className="hero-logo-feature" aria-hidden="true">
+                <img src="/logo.png" alt="" loading="eager" decoding="async" />
+              </div>
+              <p className="eyebrow">Scott Hail Landscaping</p>
+              <h1>
+                Create Your Dream
+                <br />
+                Outdoor Space
+              </h1>
+              <p className="hero-copy" id="about">
+                Premium landscaping and groundwork solutions for homes, estates, and commercial properties across
+                Cumbria.
+              </p>
+              <div className="hero-cta-row">
+                <a className="hero-cta-primary" href="#contact">Get Started</a>
+                <a className="hero-cta-secondary" href="#portfolio">View Projects</a>
               </div>
             </div>
+
+            <aside className="hero-info-card" aria-label="Company metric">
+              <p className="hero-info-kicker">Trusted Locally</p>
+              <p className="hero-info-value">500+ Clients</p>
+              <p className="hero-info-meta">Landscaping and groundwork projects delivered with precision.</p>
+            </aside>
+
+            <article className="hero-featured-card" aria-label="Featured project">
+              <p className="hero-featured-tag">Featured Project</p>
+              <h3>Carlisle Terrace Build</h3>
+              <p>Natural stone patio, structured drainage, and precision finishing for year-round use.</p>
+              <a href="#portfolio" aria-label="See featured projects">
+                View Project <span aria-hidden="true">-&gt;</span>
+              </a>
+            </article>
           </div>
         </section>
 
@@ -129,31 +333,207 @@ function HomePage() {
           </div>
         </section>
 
+        <section className="featured-video-section" aria-labelledby="featured-video-title">
+          <div className="featured-video-shell">
+            <div className="section-topline featured-video-topline">
+              <span>Featured Video</span>
+              <span>02</span>
+            </div>
+            <div className="featured-video-copy">
+              <h2 id="featured-video-title">See a Hailscapes project in motion.</h2>
+              <p>Full-site groundwork and landscaping footage captured from one of the latest installations.</p>
+            </div>
+            <div className="featured-video-frame">
+              <video
+                className="featured-video-player"
+                src="/groundworks/project1.mp4"
+                poster="/groundworks/1.jpg"
+                controls
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              />
+            </div>
+          </div>
+        </section>
+
         <section className="content-section" id="portfolio">
           <div className="section-topline">
             <span>Portfolio</span>
-            <span>02</span>
+            <span>03</span>
           </div>
           <h2>Selected landscaping projects completed across Cumbria.</h2>
-          <div className="portfolio-gallery">
-            {portfolioImages.map((imageName, index) => (
-              <figure className="portfolio-item" key={imageName}>
+          {activePortfolioImage ? (
+            <div className="portfolio-carousel">
+              <div className="portfolio-carousel-stage">
                 <button
                   type="button"
-                  className="portfolio-button"
-                  onClick={() => setSelectedImage({ imageName, index })}
-                  aria-label={`Open full size image ${index + 1}`}
+                  className="carousel-nav carousel-nav-prev"
+                  onClick={showPreviousSlide}
+                  aria-label="Show previous project image"
                 >
-                  <img
-                    src={`/groundworks/${imageName}`}
-                    alt={`Groundworks project ${index + 1}`}
-                    loading="lazy"
-                  />
+                  Prev
                 </button>
-              </figure>
-            ))}
-          </div>
+
+                <figure className="portfolio-carousel-figure">
+                  <button
+                    type="button"
+                    className="portfolio-carousel-button"
+                    onClick={() => setSelectedImage({
+                      id: activePortfolioImage.id,
+                      src: activePortfolioImage.src,
+                      alt: activePortfolioImage.alt,
+                      index: currentSlideIndex
+                    })}
+                    aria-label={`Open full size image ${currentSlideIndex + 1}`}
+                  >
+                    <img
+                      src={activePortfolioImage.src}
+                      alt={`Groundworks project ${currentSlideIndex + 1}`}
+                      loading="lazy"
+                    />
+                  </button>
+                </figure>
+
+                <button
+                  type="button"
+                  className="carousel-nav carousel-nav-next"
+                  onClick={showNextSlide}
+                  aria-label="Show next project image"
+                >
+                  Next
+                </button>
+              </div>
+
+              <div className="portfolio-carousel-meta">
+                <p>Project image {currentSlideIndex + 1} of {portfolioImages.length}</p>
+              </div>
+
+              <div className="portfolio-thumbnail-strip" aria-label="Project thumbnails">
+                {portfolioImages.map((image, index) => (
+                  <button
+                    type="button"
+                    key={image.id}
+                    className={`portfolio-thumbnail ${index === currentSlideIndex ? 'is-active' : ''}`}
+                    onClick={() => setCurrentSlideIndex(index)}
+                    aria-label={`Show project image ${index + 1}`}
+                  >
+                    <img src={image.src} alt="" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </section>
+
+        {isAdminAuthenticated ? (
+          <section className="content-section" id="admin">
+            <div className="section-topline">
+              <span>Admin</span>
+              <span>04</span>
+            </div>
+            <h2>Manage collage, before, and after photos for this browser session and future visits.</h2>
+
+            <div className="admin-panel">
+              <div className="admin-panel-actions">
+                <p>Admin mode is active on this device.</p>
+                <button type="button" onClick={handleAdminLogout}>Log Out</button>
+              </div>
+
+              <h3 className="admin-upload-heading">Collage Photos</h3>
+              <label className="admin-upload" htmlFor="admin-image-upload">
+                <span>Add Images to Collage</span>
+                <input
+                  id="admin-image-upload"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(event) => handleImageUpload(event, 'admin-collage', setAdminImages, 'Collage photos')}
+                />
+              </label>
+              {adminUploadError ? <p className="admin-upload-error">{adminUploadError}</p> : null}
+
+              {adminImages.length > 0 ? (
+                <div className="admin-image-list">
+                  {adminImages.map((image, index) => (
+                    <article className="admin-image-card" key={image.id}>
+                      <img src={image.src} alt={image.alt || `Admin uploaded image ${index + 1}`} loading="lazy" />
+                      <div className="admin-image-meta">
+                        <p>{image.alt}</p>
+                        <button type="button" onClick={() => removeAdminImage(image.id, setAdminImages)}>
+                          Remove
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="admin-empty-state">No admin uploads yet. Add images above to include them in the collage.</p>
+              )}
+
+              <h3 className="admin-upload-heading">Before Photos</h3>
+              <label className="admin-upload" htmlFor="admin-before-upload">
+                <span>Add Before Photos (Multiple)</span>
+                <input
+                  id="admin-before-upload"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(event) => handleImageUpload(event, 'admin-before', setBeforeImages, 'Before photos')}
+                />
+              </label>
+
+              {beforeImages.length > 0 ? (
+                <div className="admin-image-list">
+                  {beforeImages.map((image, index) => (
+                    <article className="admin-image-card" key={image.id}>
+                      <img src={image.src} alt={image.alt || `Before uploaded image ${index + 1}`} loading="lazy" />
+                      <div className="admin-image-meta">
+                        <p>{image.alt}</p>
+                        <button type="button" onClick={() => removeAdminImage(image.id, setBeforeImages)}>
+                          Remove
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="admin-empty-state">No before photos uploaded yet.</p>
+              )}
+
+              <h3 className="admin-upload-heading">After Photos</h3>
+              <label className="admin-upload" htmlFor="admin-after-upload">
+                <span>Add After Photos (Multiple)</span>
+                <input
+                  id="admin-after-upload"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(event) => handleImageUpload(event, 'admin-after', setAfterImages, 'After photos')}
+                />
+              </label>
+
+              {afterImages.length > 0 ? (
+                <div className="admin-image-list">
+                  {afterImages.map((image, index) => (
+                    <article className="admin-image-card" key={image.id}>
+                      <img src={image.src} alt={image.alt || `After uploaded image ${index + 1}`} loading="lazy" />
+                      <div className="admin-image-meta">
+                        <p>{image.alt}</p>
+                        <button type="button" onClick={() => removeAdminImage(image.id, setAfterImages)}>
+                          Remove
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="admin-empty-state">No after photos uploaded yet.</p>
+              )}
+            </div>
+          </section>
+        ) : null}
 
         <section className="content-section testimonials" id="events">
           <div className="section-topline">
@@ -176,9 +556,49 @@ function HomePage() {
             <a href="#">View Recent Projects</a>
             <a href="#" id="shop">Request a Quote</a>
             <a href="#" id="education">Service Areas</a>
+            <button
+              type="button"
+              className="team-access-link"
+              onClick={() => {
+                setIsAdminLoginOpen(true)
+                setAdminAuthError('')
+              }}
+            >
+              Team Login
+            </button>
+            {isAdminAuthenticated ? <a href="#admin">Open Admin Panel</a> : null}
           </div>
         </section>
       </main>
+
+      {isAdminLoginOpen ? (
+        <div
+          className="admin-login-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Admin login"
+          onClick={() => setIsAdminLoginOpen(false)}
+        >
+          <form className="admin-login-modal" onSubmit={handleAdminLoginSubmit} onClick={(event) => event.stopPropagation()}>
+            <h3>Admin Login</h3>
+            <p>Enter the team passcode to access collage management tools.</p>
+            <label htmlFor="admin-passcode">Passcode</label>
+            <input
+              id="admin-passcode"
+              type="password"
+              value={adminPasscode}
+              onChange={(event) => setAdminPasscode(event.target.value)}
+              autoComplete="current-password"
+              required
+            />
+            {adminAuthError ? <p className="admin-login-error">{adminAuthError}</p> : null}
+            <div className="admin-login-actions">
+              <button type="button" onClick={() => setIsAdminLoginOpen(false)}>Cancel</button>
+              <button type="submit">Login</button>
+            </div>
+          </form>
+        </div>
+      ) : null}
 
       {selectedImage ? (
         <div
@@ -199,8 +619,8 @@ function HomePage() {
 
           <div className="lightbox-frame" onClick={(event) => event.stopPropagation()}>
             <img
-              src={`/groundworks/${selectedImage.imageName}`}
-              alt={`Groundworks project ${selectedImage.index + 1} full size`}
+              src={selectedImage.src}
+              alt={`${selectedImage.alt || 'Groundworks project'} ${selectedImage.index + 1} full size`}
             />
           </div>
         </div>
